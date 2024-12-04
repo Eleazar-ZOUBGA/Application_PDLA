@@ -1,16 +1,12 @@
 package org.example;
 
 public class VulnerableUser extends User {
-    private String role;
-
-    public VulnerableUser(String fName, String lName, String mailAdress, String password) {
-        super(fName, lName, mailAdress, password);
-        this.role = "Vulnerable User";
+    
+    public VulnerableUser(int id, String fName, String lName, String mailAdress, String password) {
+        super(id, fName, lName, mailAdress, password, "Vulnerable User");
     }
-
-    @Override
-    public String getRole() {
-        return this.role;
+    public VulnerableUser(String fName, String lName, String mailAdress, String password) {
+        super(fName, lName, mailAdress, password, "Vulnerable User");
     }
 
     public void proposeMission(Mission mission){

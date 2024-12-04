@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.Date;
 
-/* public class MissionTest {
+public class MissionTest {
 
     @Test
     public void testMissionCreationWithEndDate() {
@@ -26,4 +26,3 @@ import java.util.Date;
         assertEquals("Validée", mission.getStatutMission());
     }
 }
-*/

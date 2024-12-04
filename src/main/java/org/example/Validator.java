@@ -1,20 +1,14 @@
 package org.example;
 
-import java.util.ArrayList;
-
 public class Validator extends User {
 
     private String motifMissionNonValidee;
-    private String role;
 
-    public Validator(String fName, String lName, String mailAdress, String password) {
-        super(fName, lName, mailAdress, password);
-        this.role = "Validator";
+    public Validator(int id, String fName, String lName, String mailAdress, String password) {
+        super(id, fName, lName, mailAdress, password, "Validator");
     }
-
-    @Override
-    public String getRole() {
-        return this.role;
+    public Validator(String fName, String lName, String mailAdress, String password) {
+        super(fName, lName, mailAdress, password, "Validator");
     }
 
     public void validateMission(Mission mission, boolean etatValidee) {

@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS Validator;
 DROP TABLE IF EXISTS Mission;
 
 CREATE TABLE User (
-    id_User INT PRIMARY KEY,
+    id_User INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     fName VARCHAR(50),
     lName VARCHAR(50),
     mailAdress VARCHAR(100),
@@ -23,7 +23,7 @@ CREATE TABLE Validator (
 );
 
 CREATE TABLE Mission (
-    id_Mission INT PRIMARY KEY,
+    id_Mission INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     title VARCHAR(100),
     description VARCHAR(250),
     id_VulnerableUser int references VulnerableUser (id_VulnerableUser),

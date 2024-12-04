@@ -1,9 +1,9 @@
 package org.example;
 
 import java.util.Date;
-import java.util.ArrayList;
 
 public class Mission {
+    private int id_Mission;
     private String title;
     private String description;
     private Date startDate;
@@ -12,7 +12,7 @@ public class Mission {
     private String motifMissionNonValidee;
     private String statutMission;
 
-    public Mission(String title, String description, Date startDate, String location, String statutMission) { // Constructeur sans la date de fin
+    public Mission(String title, String description, Date startDate, String location) { // Constructeur sans la date de fin
         this.title = title;
         this.description = description;
         this.startDate = startDate;
@@ -20,16 +20,39 @@ public class Mission {
         this.statutMission = "En Attente";
     }
 
-    public Mission(String title, String description, Date startDate, Date endDate, String location, String statutMission) { // Constructeur avec la date de fin
+    public Mission(String title, String description, Date startDate, Date endDate, String location) { // Constructeur avec la date de fin
         this.title = title;
         this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;
         this.location = location;
-        this.statutMission = "En attente";
+        this.statutMission = "En Attente";
+    }
+
+    public Mission(int id_Mission, String title, String description, Date startDate, String location) { // Constructeur sans la date de fin
+        this.id_Mission = id_Mission;
+        this.title = title;
+        this.description = description;
+        this.startDate = startDate;
+        this.location = location;
+        this.statutMission = "En Attente";
+    }
+
+    public Mission(int id_Mission, String title, String description, Date startDate, Date endDate, String location) { // Constructeur avec la date de fin
+        this.id_Mission = id_Mission;
+        this.title = title;
+        this.description = description;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.location = location;
+        this.statutMission = "En Attente";
     }
 
     // Getters and setters for each field
+    public int getIdMission() {
+        return id_Mission;
+    }
+
     public String getTitle() {
         return title;
     }

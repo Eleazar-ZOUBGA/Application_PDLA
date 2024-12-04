@@ -6,17 +6,19 @@ public abstract class User {
     private String lName;
     private String mailAdress;
     private String password;
+    private String role;
 
-    public User(int id_User, String fName, String lName, String mailAdress, String password) {
+    public User(int id_User, String fName, String lName, String mailAdress, String password, String role) {
         this.id_User = id_User;
         this.fName = fName;
         this.lName = lName;
         this.mailAdress = mailAdress;
         this.password = password;
+        this.role = role;
     }
 
-    public User(String fName, String lName, String mailAdress, String password) {
-        this(0, fName, lName, mailAdress, password); // Par défaut, id = 0 avant insertion en base
+    public User(String fName, String lName, String mailAdress, String password, String role) {
+        this(0, fName, lName, mailAdress, password, role); // Par défaut, id = 0 avant insertion en base
     }
 
     public int getId_User() {
@@ -51,6 +53,7 @@ public abstract class User {
         return this.getFName() + " " + this.getLName();
     }
 
-    // Méthode abstraite pour un comportement spécifique à implémenter dans les sous-classes
-    public abstract String getRole();
+    public String getRole(){
+        return this.role;
+    }
 }
