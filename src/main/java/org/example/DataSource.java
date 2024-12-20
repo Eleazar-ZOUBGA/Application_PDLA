@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 public class DataSource {
 
+
     // Paramètres de connexion à la base de données
     private static final String DB_URL = "jdbc:mysql://srv-bdens.insa-toulouse.fr:3306/projet_gei_032";
     private static final String DB_USER = "projet_gei_032";
@@ -22,9 +23,14 @@ public class DataSource {
     public static Connection getConnection() throws SQLException {
         if (connection == null || connection.isClosed()) { // Se connecte à la BDD si la connexion est inexistante
             try {
+                try {
+                    Class.forName("com.mysql.cj.jdbc.Driver");
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
                 connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
                 System.out.println("Connexion réussie à la base de données !");
-            } catch (SQLException e) {
+            } catch (SQLException  e) {
                 System.err.println("Erreur de connexion à la base de données : " + e.getMessage());
                 throw e;
             }
@@ -36,6 +42,12 @@ public class DataSource {
         try {
             if (connection == null || connection.isClosed()) { // Se connecte à la BDD si la connexion est inexistante
                 try {
+                    Class.forName("com.mysql.cj.jdbc.Driver");
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+                try {
+
                     connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
                 } catch (SQLException e) {
                     System.err.println("Erreur de connexion à la base de données : " + e.getMessage());
