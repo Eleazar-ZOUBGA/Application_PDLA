@@ -38,7 +38,7 @@ public class Mission {
         this.statutMission = "En Attente";
     }
 
-    public Mission(int id_Mission, String title, String description, Date startDate, Date endDate, String location) { // Constructeur avec la date de fin
+    public Mission(int id_Mission, String title, String description, Date startDate, Date endDate, String location) { // Constructeur avec la date de fin et le statut
         this.id_Mission = id_Mission;
         this.title = title;
         this.description = description;
@@ -46,6 +46,25 @@ public class Mission {
         this.endDate = endDate;
         this.location = location;
         this.statutMission = "En Attente";
+    }
+
+    public Mission(int id_Mission, String title, String description, Date startDate, String location, String statut) { // Constructeur sans la date de fin et le statut
+        this.id_Mission = id_Mission;
+        this.title = title;
+        this.description = description;
+        this.startDate = startDate;
+        this.location = location;
+        this.statutMission = statut;
+    }
+
+    public Mission(int id_Mission, String title, String description, Date startDate, Date endDate, String location, String statut) { // Constructeur avec la date de fin
+        this.id_Mission = id_Mission;
+        this.title = title;
+        this.description = description;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.location = location;
+        this.statutMission = statut;
     }
 
     // Getters and setters for each field

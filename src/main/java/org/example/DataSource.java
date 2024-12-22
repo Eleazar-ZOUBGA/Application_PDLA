@@ -217,7 +217,7 @@ public class DataSource {
                 Date startDate = rs.getDate("startDate");
                 Date endDate = rs.getDate("endDate");
                 String motif = rs.getString("motifMissionNonValidee");
-                Mission mission = new Mission(id, title, description, startDate, endDate, status);
+                Mission mission = new Mission(id, title, description, startDate, endDate, null,status);
                 mission.setMotifMissionNonValidee(motif);
                 missions.add(mission); 
             }
@@ -246,7 +246,7 @@ public class DataSource {
                 Date endDate = rs.getDate("endDate");
                 String motif = rs.getString("motifMissionNonValidee");
                 String status = rs.getString("statutMission");
-                Mission mission = new Mission(id, title, description, startDate, endDate, status);
+                Mission mission = new Mission(id, title, description, startDate, endDate, null, status);
                 mission.setMotifMissionNonValidee(motif);
                 missions.add(mission);
             }
