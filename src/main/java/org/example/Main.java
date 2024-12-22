@@ -1,6 +1,5 @@
 package org.example;
 
-import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
@@ -88,9 +87,8 @@ public class Main {
                     String description = scanner.nextLine();
                     System.out.println("Date de début :"); // Transformez le texte des 4 dernières lignes pour qu'il soit convivial
                     Date start = new Date();
-                    String location;
                     System.out.println("Saisissez le lieu de la réalisation :");
-                    location = scanner.nextLine();
+                    String location = scanner.nextLine();
 
                     Mission mission = new Mission(title,description, start, location);
                     System.out.println("Écrivez 'oui' pour confirmer");
@@ -107,8 +105,7 @@ public class Main {
                 }
                 else if (todo.equals("r")){ // Récupérer la liste des missions déjà enregistrées dans la bdd et l'afficher :
                     System.out.println("Voici la liste de toutes les missions : ");
-                    ArrayList<Mission> missions;
-                    missions = DataSource.getAllMissions();
+                    ArrayList<Mission> missions = DataSource.getMissionsByVulnerableUser(user);
                     if(missions != null){
                         for(Mission mission : missions){
                             System.out.println("Mission's Id : " + mission.getIdMission() + " | Mission's title : " + mission.getTitle() + " | Mission's status :" + mission.getStatutMission());
@@ -125,7 +122,7 @@ public class Main {
             }
             //Connexion en tant que personne validatrice :
             else if (user.getRole().equals("Validator")){
-                ArrayList<Mission> missions = DataSource.getAllMissions();
+                ArrayList<Mission> missions = DataSource.getMissionsByStatus("En Attente");
                 System.out.println("Voici la liste des missions en attente : ");
                 if(missions != null){
                     for (Mission mission : missions){
@@ -138,15 +135,26 @@ public class Main {
 
                 System.out.println("Si vous souhaitez valider une mission, ");
                 System.out.println("choisissez-en une par son identifiant :");
-                int id = scanner.nextInt();
+                int id = 0;
+                try {
+                    id = Integer.parseInt(scanner.nextLine());
+                } catch (NumberFormatException e){
+                    System.out.println("Erreur de saisie");
+                    System.exit(3);
+                }
                 if(missions != null){
-                    Mission mission = missions.get(id);
+                    Mission mission = null;
+                    for (Mission mission1 : missions){
+                        if (mission1.getIdMission()==id){
+                            mission = mission1;
+                        }
+                    }
                     if(mission != null){
                         System.out.println("######");
                         System.out.println(id);
                         System.out.println("Voici la mission que vous avez sélectionné :");
                         System.out.println("Mission's Id : " + mission.getIdMission() + " | Mission's title : " + mission.getTitle());
-                        //System.out.println(mission.getDescription());
+                        System.out.println(mission.getDescription());
                         System.out.println("Souhaitez vous validez cette mission ?");
                         System.out.println("Si oui, tapez 'oui', sinon, tapez 'non' ");
                         String validation = scanner.nextLine();
@@ -155,7 +163,9 @@ public class Main {
                             String motif;
                             motif = scanner.nextLine();
                             mission.setMotifMissionNonValidee(motif);
+                            mission.setStatutMission("Non Validée");
                             DataSource.updateStatusMission(mission);
+                            DataSource.setMotifMission(mission);
                         } else if (validation.equals("oui")){
                             mission.setStatutMission("Validée");
                             DataSource.updateStatusMission(mission);
@@ -170,23 +180,33 @@ public class Main {
             }
             //Connexion en tant que personne bénévole :
             else if (user.getRole().equals("Benevole")){
-                //ArrayList<Mission> missions = DataSource.getMissionsByStatus("En Attente");
-                ArrayList<Mission> missions = DataSource.getAllMissions();
-                System.out.println("Voici la liste des missions en attente : ");
+                ArrayList<Mission> missions = DataSource.getMissionsByStatus("Validée");
+                System.out.println("Voici la liste des missions disponibles : ");
                 if(missions != null){
                     for (Mission mission : missions){
                         System.out.println("Mission's Id : " + mission.getIdMission() + " | Mission's title : " + mission.getTitle() + " | Mission's status : " + mission.getStatutMission());
                     }
                 }
                 else{
-                    System.out.println("La liste des missions en attente de validation est vide.");
+                    System.out.println("La liste des missions disponibles est vide.");
                 }
 
                 System.out.println("Si vous souhaitez proposer votre aide pour une mission, ");
                 System.out.println("choisissez-en une par son identifiant :");
-                int id = scanner.nextInt();
+                int id = 0;
+                try {
+                    id = Integer.parseInt(scanner.nextLine());
+                } catch (NumberFormatException e){
+                    System.out.println("Erreur de saisie");
+                    System.exit(4);
+                }
                 if(missions != null){
-                    Mission mission = missions.get(id);
+                    Mission mission = null;
+                    for (Mission mission1 : missions){
+                        if (mission1.getIdMission()==id){
+                            mission = mission1;
+                        }
+                    }
                     if(mission != null){
                         System.out.println("Voici la mission que vous avez sélectionnée :");
                         System.out.println("Mission's Id : " + mission.getIdMission() + " | Mission's title : " + mission.getTitle() + " | Mission's status : " + mission.getStatutMission());

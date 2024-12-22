@@ -202,7 +202,7 @@ public class DataSource {
     }
 
     public static ArrayList<Mission> getMissionsByStatus(String status) { // Cette méthode récupère les missions non validées
-        String query = "SELECT * FROM Mission WHERE statusMission = 'En attente' ";
+        String query = "SELECT * FROM Mission WHERE statutMission = ? ";
         ArrayList<Mission> missions = new ArrayList<>();
 
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
