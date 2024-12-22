@@ -150,8 +150,6 @@ public class Main {
                         }
                     }
                     if(mission != null){
-                        System.out.println("######");
-                        System.out.println(id);
                         System.out.println("Voici la mission que vous avez sélectionné :");
                         System.out.println("Mission's Id : " + mission.getIdMission() + " | Mission's title : " + mission.getTitle());
                         System.out.println(mission.getDescription());
@@ -166,9 +164,11 @@ public class Main {
                             mission.setStatutMission("Non Validée");
                             DataSource.updateStatusMission(mission);
                             DataSource.setMotifMission(mission);
+                            System.out.println("Toutes vos remarques ont bien été prises en compte, merci !");
                         } else if (validation.equals("oui")){
                             mission.setStatutMission("Validée");
                             DataSource.updateStatusMission(mission);
+                            System.out.println("La mission a bien été validée, merci !");
                         } else{
                             System.out.println("Erreur de saisie");
                             System.exit(2);
