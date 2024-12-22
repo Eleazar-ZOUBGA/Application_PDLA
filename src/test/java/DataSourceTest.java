@@ -99,18 +99,30 @@ public class DataSourceTest {
             DataSource.startConnection();
             User user = new VulnerableUser(1, "d", "d", "d@d", "d");
             Mission mission = new Mission("Lavage", "Laver des vêtements", new Date(), "Toulouse");
+            Mission mission1 = null;
             DataSource.registerMission(mission, user);
             ArrayList<Mission> missions = DataSource.getMissionsByStatus("En Attente");
-            mission = missions.getLast();
+            for (Mission mission2 : missions){
+                mission = mission2;
+            }  
             mission.setStatutMission("Validée");
             DataSource.updateStatusMission(mission);
-            assertEquals(mission, missions.getLast());
+            for (Mission mission2 : missions){
+                mission1 = mission2;
+            }  
+            assertEquals(mission, mission1);
             mission.setStatutMission("Non Validée");
             DataSource.updateStatusMission(mission);
-            assertEquals(mission, missions.getLast());
+            for (Mission mission2 : missions){
+                mission1 = mission2;
+            }  
+            assertEquals(mission, mission1);
             mission.setStatutMission("Réalisée");
             DataSource.updateStatusMission(mission);
-            assertEquals(mission, missions.getLast());
+            for (Mission mission2 : missions){
+                mission1 = mission2;
+            }  
+            assertEquals(mission, mission1);
         }
     }
 
@@ -123,12 +135,16 @@ public class DataSourceTest {
             mission.setStatutMission("Non Validée");
             DataSource.registerMission(mission, user);
             ArrayList<Mission> missions = DataSource.getMissionsByStatus("Non Validée");
-            mission = missions.getLast();
+            for (Mission mission1 : missions){
+                mission = mission1;
+            }  
             String motif = "Test";
             mission.setMotifMissionNonValidee(motif);
             DataSource.setMotifMission(mission);
             missions = DataSource.getMissionsByStatus("Non Validée");
-            mission = missions.getLast();
+            for (Mission mission1 : missions){
+                mission = mission1;
+            }  
             assertEquals(motif, mission.getMotifMissionNonValidee());
               
         }
