@@ -201,8 +201,8 @@ public class DataSource {
         }
     }
 
-    public static ArrayList<Mission> getMissionsByStatus(String status) { // Cette méthodee permet de vérifier si les identifiants rentrés sont conformes à ce qu'il y a dans la BDD
-        String query = "SELECT * FROM Mission WHERE statusMission = ?";
+    public static ArrayList<Mission> getMissionsByStatus(String status) { // Cette méthode récupère les missions non validées
+        String query = "SELECT * FROM Mission WHERE statusMission = 'En attente' ";
         ArrayList<Mission> missions = new ArrayList<>();
 
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
@@ -229,34 +229,62 @@ public class DataSource {
         }
     }
 
-    public static ArrayList<Mission> getMissionsByVulnerableUser(User user) { // Cette méthodee permet de vérifier si les identifiants rentrés sont conformes à ce qu'il y a dans la BDD
-    String query = "SELECT * FROM Mission WHERE Id_VulnerableUser = ?";
-    ArrayList<Mission> missions = new ArrayList<>();
+    public static ArrayList<Mission> getMissionsByVulnerableUser(User user) {
+        String query = "SELECT * FROM Mission WHERE Id_VulnerableUser = ?";
+        ArrayList<Mission> missions = new ArrayList<>();
 
-    try (PreparedStatement stmt = connection.prepareStatement(query)) {
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
 
-        stmt.setInt(1, user.getId_User());
+            stmt.setInt(1, user.getId_User());
 
-        ResultSet rs = stmt.executeQuery(); // Résultat d'exécution de la requête SQL
-        while (rs.next()) {
-            int id = rs.getInt("id_Mission");
-            String title = rs.getString("title");
-            String description = rs.getString("description");
-            Date startDate = rs.getDate("startDate");
-            Date endDate = rs.getDate("endDate");
-            String motif = rs.getString("motifMissionNonValidee");
-            String status = rs.getString("statutMission");
-            Mission mission = new Mission(id, title, description, startDate, endDate, status);
-            mission.setMotifMissionNonValidee(motif);
-            missions.add(mission); 
+            ResultSet rs = stmt.executeQuery(); // Résultat d'exécution de la requête SQL
+            while (rs.next()) {
+                int id = rs.getInt("id_Mission");
+                String title = rs.getString("title");
+                String description = rs.getString("description");
+                Date startDate = rs.getDate("startDate");
+                Date endDate = rs.getDate("endDate");
+                String motif = rs.getString("motifMissionNonValidee");
+                String status = rs.getString("statutMission");
+                Mission mission = new Mission(id, title, description, startDate, endDate, status);
+                mission.setMotifMissionNonValidee(motif);
+                missions.add(mission);
+            }
+            return missions;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null; // Retourne false si les requêtes sql ne sont pas bien exécutées
         }
-        return missions;
-
-    } catch (SQLException e) {
-        e.printStackTrace();
-        return null; // Retourne false si les requêtes sql ne sont pas bien exécutées
     }
-}
+
+    public static ArrayList<Mission> getAllMissions() { // Méthode pour récupérer toutes les missions de la bdd
+        String query = "SELECT * FROM Mission";
+        ArrayList<Mission> missions = new ArrayList<>();
+
+        try (PreparedStatement stmt = getConnection().prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                int id = rs.getInt("id_Mission");
+                String title = rs.getString("title");
+                String description = rs.getString("description");
+                Date startDate = rs.getDate("startDate");
+                Date endDate = rs.getDate("endDate");
+                String status = rs.getString("statutMission");
+                String motif = rs.getString("motifMissionNonValidee");
+
+                Mission mission = new Mission(id, title, description, startDate, endDate, status);
+                mission.setMotifMissionNonValidee(motif);
+                missions.add(mission);
+            }
+            return missions;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     public static boolean updateStatusMission(Mission mission) {
         String query = "UPDATE Mission SET statutMission = ? WHERE id_Mission = ?";

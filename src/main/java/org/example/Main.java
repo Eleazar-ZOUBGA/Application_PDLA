@@ -1,5 +1,6 @@
 package org.example;
 
+import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
@@ -11,19 +12,19 @@ public class Main {
         DataSource.startConnection();
         User user = null;
 
-        System.out.println("Bienvenue à l'aplication");
+        System.out.println("Bienvenue dans l'application de bénévolat !");
 
-        System.out.println("Si vous voulez vous connecter écrire 0");
-        System.out.println("Si vous voulez vous inscrire écrire 1");
+        System.out.println("Si vous voulez vous connecter écrivez 'connexion' ");
+        System.out.println("Si vous voulez vous inscrire écrivez 'inscription' ");
         String todo = scanner.nextLine();
 
-        //se connecté avec un utilisateur existant
-        if (todo.equals("0")) {
+        //se connecter avec un utilisateur existant
+        if (todo.equals("connexion")) {
             boolean verify = false;
             while (!verify) {
-                System.out.println("Mail :");
+                System.out.println("Saisissez votre adresse email :");
                 String mail = scanner.nextLine();
-                System.out.println("Mot de passe :");
+                System.out.println("Saisissez votre mot de passe :");
                 String password = scanner.nextLine();
                 verify = DataSource.verifyCredentials(mail, password);
                 if (!verify){
@@ -31,36 +32,37 @@ public class Main {
                 }
                 else {
                     user = DataSource.getUser(mail, password);
+                    System.out.println("Vous êtes bien connecté(e) !");
+                    System.out.println("Vous êtes " + user.getRole() );
                 }
             }
-            System.out.println("Connexion établie.");
         }
-
-        //inscription
-        if (todo.equals("1")){
+        else if (todo.equals("inscription")){ //inscription
             boolean succes = false;
-            System.out.println("Pour vous inscrire écrire 0 pour Benevole ; 1 pour Validateur ; 2 pour Demandeur d'aide");
+            System.out.println("Pour vous inscrire, saisissez : 0 pour Benevole ; 1 pour Validateur ; 2 pour Demandeur d'aide");
             String role = scanner.nextLine();
-            if (role.equals("0")){
-                role = "Benevole";
+            switch (role) {
+                case "0":
+                    role = "Benevole";
+                    break;
+                case "1":
+                    role = "Validator";
+                    break;
+                case "2":
+                    role = "Vulnerable User";
+                    break;
+                default:
+                    System.err.println("Erreur, choix inexistant");
+                    System.exit(1);
             }
-            else if (role.equals("1")){
-                role = "Validator";
-            }
-            else if (role.equals("2")){
-                role = "Vulnerable User";
-            }
-            else {
-                System.err.println("Erreur choix inexistant");
-                System.exit(1);
-            }
-            System.out.println("Prénom :");
+
+            System.out.println("Saisissez votre prénom :");
             String fName = scanner.nextLine();
-            System.out.println("Nom :");
+            System.out.println("Saisissez votre nom :");
             String lName = scanner.nextLine();
-            System.out.println("Email :");
+            System.out.println("Saisissez votre email :");
             String mail = scanner.nextLine();
-            System.out.println("Mot de passe :");
+            System.out.println("Saisissez votre mot de passe :");
             String password = scanner.nextLine();
             succes = DataSource.registerUser(fName,lName,mail,password,role);
             if (!succes){
@@ -70,63 +72,138 @@ public class Main {
             user = DataSource.getUser(mail, password);  
         }
 
-        if (user != null){  
+        // Une fois que l'utilisateur s'est connecté, l'application se comporte en fonction de son rôle
+        if (user != null){
+            //Connexion en tant que personne vulnérable :
             if (user.getRole().equals("Vulnerable User")){
-                System.out.println("Que voulez vous faire? (s : soumettre une mission ; r : regarder les missions)");
-                todo = scanner.nextLine(); // s : soumettre une mission ; r : regarder les mission proposé et leurs etats
+                // User utilisateur = DataSource.getUser(this.get); Essayer de récupérer l'utilisateur qui se connecte
+                System.out.println("Que voulez vous faire?");
+                System.out.println("Pour saisir une mission, saisissez 's' ");
+                System.out.println("Pour regarder les missions déjà présentes, saisissez 'r' ");
+                todo = scanner.nextLine(); // s : soumettre une mission ; r : regarder les missions proposées et leurs états
                 if (todo.equals("s")){
-                    System.out.println("Donne un titre :");
+                    System.out.println("Donnez un titre à votre mission :");
                     String title = scanner.nextLine();
-                    System.out.println("Donne une description :");
+                    System.out.println("Donnez une description à votre mission :");
                     String description = scanner.nextLine();
-                    System.out.println("Commence :");
+                    System.out.println("Date de début :"); // Transformez le texte des 4 dernières lignes pour qu'il soit convivial
                     Date start = new Date();
-                    System.out.println("Fini :");
-                    System.out.println("Où :");
-                    String location = "Toulouse";
+                    String location;
+                    System.out.println("Saisissez le lieu de la réalisation :");
+                    location = scanner.nextLine();
 
                     Mission mission = new Mission(title,description, start, location);
-                    System.out.println("Veuillez confirmer (y : oui)");
-                    boolean conf = scanner.nextLine().equals("y");
-                    if (conf){
-                        DataSource.registerMission(mission, user);
-                        System.out.println("La mission a était enregistré");
+                    System.out.println("Écrivez 'oui' pour confirmer");
+                    String confirmation;
+                    confirmation = scanner.nextLine();
+                    if (confirmation.equals("oui")){
+                        DataSource.registerMission(mission, user); // Revoir cette partie, car utilisateur a une valeur nulle
+                        System.out.println("La mission a été bien enregistrée");
+                    }
+                    else{
+                        System.out.println("Erreur lors de la confirmation.");
+                        System.exit(2);
                     }
                 }
-                if (todo.equals("r")){
-
+                else if (todo.equals("r")){ // Récupérer la liste des missions déjà enregistrées dans la bdd et l'afficher :
+                    System.out.println("Voici la liste de toutes les missions : ");
+                    ArrayList<Mission> missions;
+                    missions = DataSource.getAllMissions();
+                    if(missions != null){
+                        for(Mission mission : missions){
+                            System.out.println("Mission's Id : " + mission.getIdMission() + " | Mission's title : " + mission.getTitle() + " | Mission's status :" + mission.getStatutMission());
+                        }
+                    }
+                    else{
+                        System.out.println("Erreur lors de la récupération des missions.");
+                    }
+                }
+                else{
+                    System.out.println("Votre choix est inconnu. Veuillez réessayer !");
+                    System.exit(2);
                 }
             }
-            if (user.getRole().equals("Validator")){
-                ArrayList<Mission> missions = DataSource.getMissionsByStatus("En Attente");
-                System.out.println("Voici les mission en attente.");
-                for (Mission mission : missions){
-                    System.out.println("####################################################");
-                    System.out.println(missions.indexOf(mission) + "|" + mission.getTitle());
-                    System.out.println(mission.getDescription());
+            //Connexion en tant que personne validatrice :
+            else if (user.getRole().equals("Validator")){
+                ArrayList<Mission> missions = DataSource.getAllMissions();
+                System.out.println("Voici la liste des missions en attente : ");
+                if(missions != null){
+                    for (Mission mission : missions){
+                        System.out.println("Mission's Id : " + mission.getIdMission() + " | Mission's title : " + mission.getTitle() + " | Mission's status :" + mission.getStatutMission());
+                    }
                 }
-                System.out.println("####################################################");
-                System.out.println("Choisi une mission par son numero :");
+                else{
+                    System.out.println("La liste des missions en attente de validation est vide.");
+                }
+
+                System.out.println("Si vous souhaitez valider une mission, ");
+                System.out.println("choisissez-en une par son identifiant :");
                 int id = scanner.nextInt();
-                Mission mission = missions.get(id);
-                System.out.println(mission.getTitle());
-                System.out.println(mission.getDescription());
-                System.out.println("Vous validez? (v : pour valider)");
-                boolean validate = scanner.nextLine().equals("v");
-                String motif;
-                if (!validate){
-                    System.out.println("Motif :");
-                    motif = scanner.nextLine();
-                    mission.setMotifMissionNonValidee(motif);
+                if(missions != null){
+                    Mission mission = missions.get(id);
+                    if(mission != null){
+                        System.out.println("######");
+                        System.out.println(id);
+                        System.out.println("Voici la mission que vous avez sélectionné :");
+                        System.out.println("Mission's Id : " + mission.getIdMission() + " | Mission's title : " + mission.getTitle());
+                        //System.out.println(mission.getDescription());
+                        System.out.println("Souhaitez vous validez cette mission ?");
+                        System.out.println("Si oui, tapez 'oui', sinon, tapez 'non' ");
+                        String validation = scanner.nextLine();
+                        if (validation.equals("non")){
+                            System.out.println("Saisissez le motif pour la non validation de la mission :");
+                            String motif;
+                            motif = scanner.nextLine();
+                            mission.setMotifMissionNonValidee(motif);
+                            DataSource.updateStatusMission(mission);
+                        } else if (validation.equals("oui")){
+                            mission.setStatutMission("Validée");
+                            DataSource.updateStatusMission(mission);
+                        } else{
+                            System.out.println("Erreur de saisie");
+                            System.exit(2);
+                        }
+                    }else {
+                        System.out.println("Erreur, la mission sélectionnée n'existe pas");
+                    }
                 }
-                //user.validateMission(missions.get(id),validate);
-                mission.setStatutMission("Validée");
-                DataSource.updateStatusMission(mission);
-                if (!validate){
-                    DataSource.setMotifMission(mission);
+            }
+            //Connexion en tant que personne bénévole :
+            else if (user.getRole().equals("Benevole")){
+                //ArrayList<Mission> missions = DataSource.getMissionsByStatus("En Attente");
+                ArrayList<Mission> missions = DataSource.getAllMissions();
+                System.out.println("Voici la liste des missions en attente : ");
+                if(missions != null){
+                    for (Mission mission : missions){
+                        System.out.println("Mission's Id : " + mission.getIdMission() + " | Mission's title : " + mission.getTitle() + " | Mission's status : " + mission.getStatutMission());
+                    }
+                }
+                else{
+                    System.out.println("La liste des missions en attente de validation est vide.");
                 }
 
+                System.out.println("Si vous souhaitez proposer votre aide pour une mission, ");
+                System.out.println("choisissez-en une par son identifiant :");
+                int id = scanner.nextInt();
+                if(missions != null){
+                    Mission mission = missions.get(id);
+                    if(mission != null){
+                        System.out.println("Voici la mission que vous avez sélectionnée :");
+                        System.out.println("Mission's Id : " + mission.getIdMission() + " | Mission's title : " + mission.getTitle() + " | Mission's status : " + mission.getStatutMission());
+                        mission.setStatutMission("Réalisée");
+                        DataSource.updateStatusMission(mission);
+                        //System.out.println(mission.getDescription());
+                        System.out.println("Merci pour votre soutien envers les personnes vulnérables");
+                    }
+                }
             }
+            else{ //
+                System.out.println("Votre rôle est inconnue");
+                System.exit(2);
+            }
+        }
+        else{
+            System.out.println("Aucun utilisateur enregistré. Connectez vous ou inscrivez vous.");
         }
         scanner.close();
     }
